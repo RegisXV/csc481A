@@ -78,6 +78,8 @@ def main():
         file_paths: list[str] = all_file_paths()
         data: list[tuple[float, float]] = filter_data(
             file_paths)  # each tuple is a point
+        
+        print(data)
 
 
 main()
