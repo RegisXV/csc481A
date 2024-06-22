@@ -3,6 +3,8 @@
 """
 @author: Wilkenson | Kyle | Aeron
 @date: 01/01/2024
+@version: 1.0
+readme file: README.md
 """
 
 import os
