@@ -38,8 +38,6 @@ def euclidean_distance(p1: float, p2: float) -> float:
     """
     return np.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
-# Glob files into one directory
-
 
 def all_file_paths() -> Dict[str, List[str]]:
     """
