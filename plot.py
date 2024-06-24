@@ -8,6 +8,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import GridSearchCV, StratifiedKFold
 
 
 class Plot:
@@ -158,15 +159,50 @@ class Plot:
 
     def plot_classifier(self):
         classifiers = [
-            KNeighborsClassifier(),
-            SVC(probability=True),
-            DecisionTreeClassifier(),
-            GaussianNB(),
-            MLPClassifier(max_iter=10000)
+            ('KNN', KNeighborsClassifier(), {'n_neighbors': [3, 5, 7, 9]}),
+            ('SVC', SVC(probability=True), {
+             'C': [0.1, 1, 10], 'kernel': ['linear', 'rbf']}),
+            ('DecisionTree', DecisionTreeClassifier(),
+             {'max_depth': [None, 10, 20, 30]}),
+            ('GaussianNB', GaussianNB(), {}),
+            ('MLP', MLPClassifier(max_iter=10000), {
+             'hidden_layer_sizes': [(50,), (100,), (50, 50)]})
         ]
 
-        for clf in classifiers:
-            clf.fit(self.training_features, self.training_labels)
+        tuned_classifiers = []
 
-        self.plt_avg_roc(
-            classifiers, self.testing_features, self.testing_labels)
+        # Determine the minimum number of samples in each class
+        min_samples_per_class = min(np.bincount(self.training_labels))
+
+        # Set the number of splits to the minimum between 5 and the number of samples per class
+        n_splits = min(5, min_samples_per_class)
+
+        for _, clf, param_grid in classifiers:
+            if param_grid:
+                cv = StratifiedKFold(n_splits=n_splits)
+                grid_search = GridSearchCV(
+                    clf, param_grid, cv=cv, scoring='roc_auc_ovr', error_score='raise')
+                grid_search.fit(self.training_features, self.training_labels)
+                tuned_clf = grid_search.best_estimator_
+            else:
+                clf.fit(self.training_features, self.training_labels)
+                tuned_clf = clf
+            tuned_classifiers.append(tuned_clf)
+
+        self.plt_avg_roc(tuned_classifiers,
+                         self.testing_features, self.testing_labels)
+
+    # def plot_classifier(self):
+    #     classifiers = [
+    #         KNeighborsClassifier(),
+    #         SVC(probability=True),
+    #         DecisionTreeClassifier(),
+    #         GaussianNB(),
+    #         MLPClassifier(max_iter=10000)
+    #     ]
+
+    #     for clf in classifiers:
+    #         clf.fit(self.training_features, self.training_labels)
+
+    #     self.plt_avg_roc(
+    #         classifiers, self.testing_features, self.testing_labels)
