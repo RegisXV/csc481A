@@ -34,9 +34,12 @@ class ReportManager(Plot):
         with open(report_file, 'w') as f:
             f.write(f"Model: {model_name}\n\n")
             for i, cls in enumerate(fpr):
-                f.write(f"Class {i} ROC Curve (area = {roc_auc[i]:.2f}):\n")
-                f.write(f"False Positive Rate: {fpr[i]}\n")
-                f.write(f"True Positive Rate : {tpr[i]}\n\n")
+                print(i, roc_auc)
+                # f.write(f"Class {i} ROC Curve (area = {roc_auc[i]:.2f}):\n")
+                print(i, fpr)
+                # f.write(f"False Positive Rate: {fpr[i]}\n")
+                print(i, tpr)
+                # f.write(f"True Positive Rate : {tpr[i]}\n\n")
 
     def report(self, file_dict: dict[str, str], encoded_labels: list[int],
                output_dir='classification_reports') -> None:

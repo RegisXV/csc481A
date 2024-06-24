@@ -42,7 +42,7 @@ class ModelTrainer(DataProcessor, ReportManager):
         predictions = gnd.predict(testing_features)
         report = classification_report(
             testing_labels, predictions, zero_division=0)
-        return report, testing_labels, predictions, 'Naives Bayes'
+        return report, testing_labels, predictions, 'NB'
 
     def ann(self, training_features: List[float], training_labels: List[int],
             testing_features: List[float], testing_labels: List[int]
