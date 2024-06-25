@@ -56,7 +56,7 @@ class DataProcessor:
             raise FileNotFoundError('Could not find the dataset folder')
 
         # Collect all file paths grouped by their parent directory
-        all_files = {}
+        all_files: dict = {}
         for gender_prefix in ['m', 'w']:
             dir_paths = glob.glob(os.path.join(
                 base_path, f'{gender_prefix}-*'))
